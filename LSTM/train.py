@@ -12,7 +12,6 @@ import torch
 from torch import nn
 from torch import optim
 from torch.autograd import Variable
-import os
 import numpy as np
 from LSTM.model import Model_Lstm
 import json
@@ -22,12 +21,13 @@ from LSTM.cnews_loader import read_category, batch_iter, process_file
 class Model_Train():
 
     def __init__(self):
+        self.vocab_file = 'D:\gitwork\script\data\dictionary.json'
+        self.train_file = 'D:\model\practical-pytorch-master\cnews_data\cnews.train.txt'
         self.classes = 10
         self.char_index = {' ': 0}
         self.load_dict()
         self.num_layers = 1
         self.vocab_size = len(self.char_index)
-        self.vocab_file = 'data.txt'
         self.drop_out = 0.5
         self.learning_rate = 0.0001
         self.embedding_size = 100
@@ -48,13 +48,13 @@ class Model_Train():
     def train(self, epochs):
         # 获取文本的类别及其对应id的字典
         categories, cat_to_id = read_category()
-        x_train, y_train = process_file(self. vocab_file, self.char_index, cat_to_id, self.sequence)
-        x_val, y_val = process_file(self. vocab_file, self.char_index, cat_to_id, self.sequence)
+        x_train, y_train = process_file(self.train_file, self.char_index, cat_to_id, self.sequence)
+        x_val, y_val = process_file(self.vocab_file, self.char_index, cat_to_id, self.sequence)
         # 损失函数
         Loss = nn.MultiLabelSoftMarginLoss()
         optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
         best_val_acc = 0
-        for epoch in epochs:
+        for epoch in range(epochs):
             batch_train = batch_iter(x_train, y_train, self.batch_size)
             for x_batch, y_batch in batch_train:
                 x = np.array(x_batch)
@@ -95,4 +95,4 @@ class Model_Train():
 
 if __name__ == '__main__':
     model_train = Model_Train()
-    model_train.train()
+    model_train.train(10)
