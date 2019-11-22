@@ -15,15 +15,22 @@ class SkipGramModel(nn.Module):
 
     def __init__(self, emb_size, emb_dimension, batch_size, window_size, iteration, initial_lr, min_count):
         super(SkipGramModel, self).__init__()
+        # 词个数
         self.emb_size = emb_size
+        # 维度
         self.emb_dimension = emb_dimension
+        # 批次
         self.batch_size = batch_size
+        # 窗口大小
         self.window_size = window_size
         self.iteration = iteration
+        # 学习率
         self.initial_lr = initial_lr
+        # 最少出现次数
         self.min_count = min_count
-
+        # 中心词
         self.u_embeddings = nn.Embedding(self.emb_size, self.emb_dimension, sparse=True)
+        # 周边词
         self.v_embeddings = nn.Embedding(self.emb_size, self.emb_dimension, sparse=True)
         initrange = 0.5 / self.emb_dimension
         self.u_embeddings.weight.data.uniform_(-initrange, initrange)
